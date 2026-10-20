@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil Musical Glassmorphism</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons (para los iconos de los botones) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        /* Bloquear scroll horizontal para evitar desbordes */
+        body, html {
+            overflow-x: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+        }
+
+        /* Capa de fondo fija para evitar saltos en móviles (Safari/Chrome Mobile) */
+        .bg-fixed-mobile {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://xatimg.com/image/g4gbuu2npBIQ.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 0; /* Al fondo del todo */
+            pointer-events: none;
+        }
+
+        /* Utilidad de cristal (Glassmorphism) */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border-radius: 1.5rem;
+            transition: all 0.4s ease;
+        }
+
+        /* Scrollbar customization for lists */
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        /* Efecto Onda de Agua Simple */
+        .water-ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: ripple-expand 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            pointer-events: none; 
+            z-index: 1; /* Sobre el fondo pero bajo los cristales */
+        }
+
+        @keyframes ripple-expand {
+            0% { width: 0px; height: 0px; opacity: 1; border: 3px solid rgba(255, 255, 255, 0.4); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.4); }
+            100% { width: 350px; height: 350px; opacity: 0; border: 0px solid rgba(255, 255, 255, 0); box-shadow: inset 0 0 0px rgba(255, 255, 255, 0); }
+        }
+
+        /* Transición suave para las barras del sound wave */
+        .wave-bar {
+            transition: height 0.15s ease;
+        }
+    </style>
+</head>
+<body class="text-white antialiased min-h-screen relative">
+
+    <!-- Fondo inamovible (Soluciona bugs en celulares) -->
+    <div class="bg-fixed-mobile"></div>
+    
+    <!-- Contenedor exclusivo para las gotas de agua -->
+    <div id="ripple-container" class="fixed inset-0 w-full h-full pointer-events-none z-[1] overflow-hidden"></div>
+
+    <!-- Contenedor Principal (mt-28 para dar espacio al banner de xat.me) -->
+    <main class="relative z-10 w-full max-w-[1000px] mx-auto p-4 md:p-8 mt-28 flex flex-col md:flex-row gap-6 md:gap-8 items-start justify-center min-h-[calc(100vh-7rem)]">
+        
+        <!-- Columna Izquierda: Listas y Citas -->
+        <div class="w-full md:w-[280px] flex flex-col gap-6 shrink-0 toggle-target">
+            
+            <!-- Toggle Visibility Button -->
+            <button id="toggle-btn" class="glass-panel px-4 py-2 flex items-center gap-2 hover:bg-white/10 w-max text-sm font-medium transition-colors mb-2 z-50 relative pointer-events-auto cursor-pointer">
+                <i class="ph ph-eye-slash text-lg" id="toggle-icon"></i> 
+                <span id="toggle-text">Ocultar</span>
+            </button>
+
+            <!-- Playlists Widget -->
+            <div class="glass-panel p-5 h-[280px] flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-semibold text-sm tracking-wide">Playlists</h2>
+                    <div class="flex gap-2 text-white/70">
+                        <i class="ph ph-magnifying-glass cursor-pointer hover:text-white transition-colors"></i>
+                        <i class="ph ph-plus cursor-pointer hover:text-white transition-colors"></i>
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto custom-scroll pr-2 flex flex-col gap-3" id="playlist-container">
+                    <!-- Canción Nueva 1 -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/sqatlt6kofd4w6zcbobk4/T-ya-no.mp3?rlkey=oxpwf2p3p61zuz4k8pdq6wag1&st=ac4agg56&raw=1" data-title="Tú ya no">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-rose-500 to-pink-500 shadow-sm flex items-center justify-center">
+                            <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate song-title-text">Tú ya no</h3>
+                        </div>
+                    </div>
+                    <!-- Canción Nueva 2 -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/mljhdpp4a3dnkadqov43y/Lagos-Reik.mp3?rlkey=unq2bfmidqt3itx8wx3kf8f36&st=b7envmhy&raw=1" data-title="Lagos - Reik">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-orange-400 to-amber-500 shadow-sm flex items-center justify-center">
+                            <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate text-white/80 song-title-text">Lagos - Reik</h3>
+                        </div>
+                    </div>
+                    <!-- Canción 1 (Antigua) -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/mcvqdocpc3tck1ifnz4px/Contigo-pero-solo.mp3?rlkey=p9mnbwvqy0g193f66l8x6qvvo&st=mfovdqa9&raw=1" data-title="Contigo pero solo">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-purple-500 to-indigo-500 shadow-sm flex items-center justify-center">
+                            <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate text-white/80 song-title-text">Contigo pero solo</h3>
+                        </div>
+                    </div>
+                    <!-- Canción 2 -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/jkvd2ewuck1fx28cdkfjg/Cuando-quieres.mp3?rlkey=igx98qozkf00s22amqfrzm7ue&st=n7s4pz1f&raw=1" data-title="Cuando quieres">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-gray-700 to-gray-900 shadow-sm flex items-center justify-center">
+                            <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate text-white/80 song-title-text">Cuando quieres</h3>
+                        </div>
+                    </div>
+                    <!-- Canción 3 -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/2800epy3qigrf5t1s5xs7/Est-s-pero-no.mp3?rlkey=i9xsimiexr4mc4b077vj3osqg&st=25ebadd8&raw=1" data-title="Estás pero no">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-teal-400 to-emerald-500 shadow-sm flex items-center justify-center">
+                            <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate text-white/80 song-title-text">Estás pero no</h3>
+                        </div>
+                    </div>
+                    <!-- Canción 4 -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/926b0wn6n25hfq1ly7tf3/Te-di-de-m-s.mp3?rlkey=yq0mwcgrjsu3kchafrcc4j5ip&st=qrn5unp2&raw=1" data-title="Te di de más">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-gray-500 to-gray-600 shadow-sm flex items-center justify-center">
+                             <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate text-white/80 song-title-text">Te di de más</h3>
+                        </div>
+                    </div>
+                    <!-- Canción 5 -->
+                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors playlist-item group" data-src="https://www.dropbox.com/scl/fi/lfy0ykgvhb9uzmujkp98k/Vives-en-ayer.mp3?rlkey=0cymbrqq0fapwgooy5v5gstw5&st=dex7tqyq&raw=1" data-title="Vives en ayer">
+                        <div class="w-10 h-10 rounded-md bg-gradient-to-br from-blue-400 to-indigo-500 shadow-sm flex items-center justify-center">
+                             <i class="ph-fill ph-music-notes text-white opacity-70 group-hover:opacity-100"></i>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h3 class="text-sm font-medium truncate text-white/80 song-title-text">Vives en ayer</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Central: Reproductor Principal -->
+        <div class="w-full md:w-[340px] glass-panel p-6 flex flex-col shrink-0 toggle-target relative z-20">
+            <!-- Portada animada (Video de fondo) -->
+            <div class="w-full aspect-square rounded-2xl bg-black/20 mb-6 relative overflow-hidden shadow-inner flex items-center justify-center border border-white/10">
+                <!-- Video incrustado como portada -->
+                <video id="sync-video" class="absolute inset-0 w-full h-full object-cover opacity-90 pointer-events-none z-0" muted loop playsinline preload="auto">
+                    <source src="https://www.dropbox.com/scl/fi/f87lozcqw6xt604h7l94g/3f55a86f9e1c0a75be19be0861e1eda1_720w.mp4?rlkey=74uvfg8mqiocm45817zhz44h5&st=77ttoe4f&raw=1" type="video/mp4">
+                </video>
+                
+                <!-- Gradiente oscuro sutil -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10"></div>
+            </div>
+
+            <!-- Info de la canción -->
+            <div class="flex justify-between items-end mb-6">
+                <div>
+                    <h1 id="main-song-title" class="text-2xl font-bold tracking-tight mb-1">Tú ya no</h1>
+                    <p class="text-sm text-white/60 font-medium">тaкιѕ™</p>
+                </div>
+                <button id="like-btn" class="text-[#1DB954] hover:scale-110 transition-transform mb-1">
+                    <i class="ph-fill ph-heart text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div class="mb-6">
+                <div class="w-full h-1.5 bg-white/20 rounded-full relative cursor-pointer" id="progress-container">
+                    <div id="progress-bar" class="absolute top-0 left-0 h-full bg-white rounded-full w-0 shadow-[0_0_10px_rgba(255,255,255,0.5)] relative">
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md scale-0 transition-transform origin-center" id="progress-handle"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between text-[11px] text-white/50 mt-2 font-medium tracking-wider">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">-:--</span>
+                </div>
+            </div>
+
+            <!-- Controles de Reproducción -->
+            <div class="flex justify-between items-center px-2">
+                <button class="text-white/50 hover:text-white transition-colors">
+                    <i class="ph ph-shuffle text-xl"></i>
+                </button>
+                <div class="flex items-center gap-6">
+                    <button id="prev-btn" class="text-white hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-skip-back text-2xl"></i>
+                    </button>
+                    <button id="play-pause-btn" class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-black hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                        <i class="ph-fill ph-play text-2xl ml-1" id="play-icon"></i>
+                    </button>
+                    <button id="next-btn" class="text-white hover:scale-110 transition-transform">
+                        <i class="ph-fill ph-skip-forward text-2xl"></i>
+                    </button>
+                </div>
+                <button class="text-white/50 hover:text-white transition-colors">
+                    <i class="ph ph-repeat text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Widgets secundarios -->
+        <div class="w-full md:w-[260px] flex flex-col gap-6 shrink-0 toggle-target">
+            
+            <!-- Sound wave Widget -->
+            <div class="glass-panel p-5 h-[160px] flex flex-col justify-center relative overflow-hidden">
+                <div class="flex justify-between items-center mb-6 absolute top-5 w-[calc(100%-2.5rem)]">
+                    <h2 class="font-semibold text-sm">Sound wave</h2>
+                    <i class="ph-fill ph-spotify-logo text-white/60"></i>
+                </div>
+                
+                <!-- Ondas Dinámicas (Controladas por JS) -->
+                <div class="flex items-end justify-center gap-1.5 h-12 mt-6" id="sound-waves">
+                    <div class="wave-bar w-1.5 bg-white/80 rounded-full h-2"></div>
+                    <div class="wave-bar w-1.5 bg-white/60 rounded-full h-3"></div>
+                    <div class="wave-bar w-1.5 bg-white rounded-full h-4"></div>
+                    <div class="wave-bar w-1.5 bg-white/70 rounded-full h-2"></div>
+                    <div class="wave-bar w-1.5 bg-white rounded-full h-4"></div>
+                    <div class="wave-bar w-1.5 bg-white/50 rounded-full h-3"></div>
+                    <div class="wave-bar w-1.5 bg-white/90 rounded-full h-5"></div>
+                    <div class="wave-bar w-1.5 bg-white/60 rounded-full h-2"></div>
+                    <div class="wave-bar w-1.5 bg-white/40 rounded-full h-2"></div>
+                </div>
+            </div>
+
+            <!-- Quote & Gallery Widget -->
+            <div class="glass-panel p-6 flex flex-col items-center justify-center gap-4 text-center h-[160px]">
+                <p class="text-sm font-semibold text-white/90">
+                    Tu estilo, mi creatividad, un diseño único.
+                </p>
+                <a href="https://www.flickr.com/photos/takisdesign/" target="_blank" rel="noopener noreferrer" class="text-sm font-semibold text-white/70 hover:text-[#1DB954] transition-colors cursor-pointer">
+                    Galería
+                </a>
+            </div>
+
+            <!-- Firma -->
+            <div class="w-full text-right pr-2">
+                <p class="text-[11px] font-medium text-white/40 tracking-wider">
+                    Hecho por тaкιѕ™
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts funcionales -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Lógica para ocultar/mostrar cuadros
+            const toggleBtn = document.getElementById('toggle-btn');
+            const toggleIcon = document.getElementById('toggle-icon');
+            const toggleText = document.getElementById('toggle-text');
+            
+            // Seleccionamos específicamente todos los paneles de cristal y la firma, ignorando el botón principal
+            const hideableElements = document.querySelectorAll('.glass-panel:not(#toggle-btn), .text-right.pr-2');
+            let isHidden = false;
+
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evita que el clic propague al fondo
+                isHidden = !isHidden;
+                
+                hideableElements.forEach(el => {
+                    // Agregamos la transición por si el elemento no la tiene por defecto (como la firma)
+                    el.style.transition = 'opacity 0.4s ease';
+                    
+                    if (isHidden) {
+                        el.style.opacity = '0';
+                        el.style.pointerEvents = 'none';
+                    } else {
+                        el.style.opacity = '1';
+                        el.style.pointerEvents = 'auto';
+                    }
+                });
+
+                if (isHidden) {
+                    toggleIcon.classList.replace('ph-eye-slash', 'ph-eye');
+                    toggleText.textContent = 'Mostrar';
+                } else {
+                    toggleIcon.classList.replace('ph-eye', 'ph-eye-slash');
+                    toggleText.textContent = 'Ocultar';
+                }
+            });
+
+            // 2. Efecto de agua simple
+            document.body.addEventListener('click', (e) => {
+                // No activar el agua si dimos clic en el botón de ocultar
+                if(e.target.closest('#toggle-btn')) return;
+
+                const container = document.getElementById('ripple-container');
+                if(!container) return; 
+
+                const ripple = document.createElement('div');
+                ripple.classList.add('water-ripple');
+                
+                // Centramos el círculo en la coordenada del clic
+                ripple.style.left = `${e.clientX}px`;
+                ripple.style.top = `${e.clientY}px`;
+                
+                container.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1200); 
+            });
+
+            // 3. (Contador de visitas eliminado y reemplazado por control de video en los eventos del audio)
+            
+            // 4. Lógica Completa del Reproductor de Música y Playlists
+            const currentAudio = new Audio();
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const playIcon = document.getElementById('play-icon');
+            const mainSongTitle = document.getElementById('main-song-title');
+            
+            // Controles de tiempo
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const currentTimeEl = document.getElementById('current-time');
+            const totalTimeEl = document.getElementById('total-time');
+            
+            // Botones secundarios
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const likeBtn = document.getElementById('like-btn');
+            let isLiked = true;
+
+            // Recolectar datos de las canciones desde el HTML
+            const playlistElements = document.querySelectorAll('.playlist-item');
+            const playlist = [];
+            let currentIndex = 0;
+
+            playlistElements.forEach((el, index) => {
+                playlist.push({
+                    title: el.getAttribute('data-title'),
+                    src: el.getAttribute('data-src'),
+                    element: el
+                });
+
+                // Clic en la lista de reproducción
+                el.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Evita ripple si se quiere
+                    playSong(index);
+                });
+            });
+
+            // Función principal para reproducir canción por índice
+            function playSong(index) {
+                if(index < 0) index = playlist.length - 1;
+                if(index >= playlist.length) index = 0;
+                
+                currentIndex = index;
+                const song = playlist[currentIndex];
+                
+                // Actualizar interfaz
+                mainSongTitle.textContent = song.title;
+                currentAudio.src = song.src;
+                
+                // Efecto de canción activa en la lista (Letras verdes)
+                playlistElements.forEach(el => {
+                    const titleText = el.querySelector('.song-title-text');
+                    if (titleText) {
+                        titleText.classList.remove('text-[#1DB954]');
+                        titleText.classList.add('text-white/80');
+                    }
+                });
+                const activeTitle = song.element.querySelector('.song-title-text');
+                if (activeTitle) {
+                    activeTitle.classList.remove('text-white/80');
+                    activeTitle.classList.add('text-[#1DB954]');
+                }
+
+                // Manejar promesa de reproducción para evitar AbortError
+                const playPromise = currentAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        playIcon.classList.replace('ph-play', 'ph-pause');
+                        playIcon.classList.remove('ml-1'); // Ajuste visual del pause
+                    }).catch(error => {
+                        // Ignoramos el error si el usuario cambia de canción muy rápido
+                        if (error.name !== 'AbortError') {
+                            console.error("Error al reproducir audio:", error);
+                        }
+                    });
+                }
+            }
+
+            // Reproducir / Pausar
+            playPauseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(!currentAudio.src) {
+                    // Si no hay canción, poner la primera
+                    playSong(0);
+                    return;
+                }
+
+                if (currentAudio.paused) {
+                    const playPromise = currentAudio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            playIcon.classList.replace('ph-play', 'ph-pause');
+                            playIcon.classList.remove('ml-1');
+                        }).catch(e => { if (e.name !== 'AbortError') console.error(e); });
+                    }
+                } else {
+                    currentAudio.pause();
+                    playIcon.classList.replace('ph-pause', 'ph-play');
+                    playIcon.classList.add('ml-1');
+                }
+            });
+
+            // Siguiente / Anterior
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                playSong(currentIndex + 1);
+            });
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                playSong(currentIndex - 1);
+            });
+
+            // Autoplay siguiente al terminar
+            currentAudio.addEventListener('ended', () => {
+                playSong(currentIndex + 1);
+            });
+
+            // Funcionalidad de "Me gusta"
+            likeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                isLiked = !isLiked;
+                const icon = likeBtn.querySelector('i');
+                if (isLiked) {
+                    likeBtn.classList.add('text-[#1DB954]');
+                    likeBtn.classList.remove('text-white/50');
+                    icon.classList.replace('ph', 'ph-fill');
+                } else {
+                    likeBtn.classList.remove('text-[#1DB954]');
+                    likeBtn.classList.add('text-white/50');
+                    icon.classList.replace('ph-fill', 'ph');
+                }
+            });
+
+            // Formatear el tiempo a mm:ss
+            function formatTime(seconds) {
+                if (isNaN(seconds)) return "-:--";
+                const min = Math.floor(seconds / 60);
+                const sec = Math.floor(seconds % 60);
+                return `${min}:${sec.toString().padStart(2, '0')}`;
+            }
+
+            // Cargar metadata de tiempo
+            currentAudio.addEventListener('loadedmetadata', () => {
+                totalTimeEl.textContent = formatTime(currentAudio.duration);
+            });
+
+            // Actualizar barra de progreso y tiempo
+            currentAudio.addEventListener('timeupdate', () => {
+                currentTimeEl.textContent = formatTime(currentAudio.currentTime);
+                if (currentAudio.duration) {
+                    const progressPercent = (currentAudio.currentTime / currentAudio.duration) * 100;
+                    progressBar.style.width = `${progressPercent}%`;
+                }
+            });
+
+            // Hacer clic en la barra para adelantar/atrasar
+            progressContainer.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if(currentAudio.src) {
+                    const width = progressContainer.clientWidth;
+                    const clickX = e.offsetX;
+                    const duration = currentAudio.duration;
+                    currentAudio.currentTime = (clickX / width) * duration;
+                }
+            });
+
+            // Mostrar bolita en la barra al hacer hover (UI detail)
+            progressContainer.addEventListener('mouseenter', () => {
+                document.getElementById('progress-handle').classList.remove('scale-0');
+                document.getElementById('progress-handle').classList.add('scale-100');
+            });
+            progressContainer.addEventListener('mouseleave', () => {
+                document.getElementById('progress-handle').classList.add('scale-0');
+                document.getElementById('progress-handle').classList.remove('scale-100');
+            });
+
+            // 5. Animación Dinámica del Sound Wave (sincronizada con estado del audio)
+            const waveBars = document.querySelectorAll('.wave-bar');
+            let waveInterval;
+
+            function animateWaves() {
+                waveBars.forEach(bar => {
+                    // Alturas aleatorias entre 10% y 100% de su capacidad para dar efecto de ecualizador
+                    const randomHeight = Math.floor(Math.random() * 24) + 8; // entre 8px y 32px
+                    bar.style.height = `${randomHeight}px`;
+                });
+            }
+
+            function resetWaves() {
+                waveBars.forEach(bar => {
+                    bar.style.height = '4px'; // Reposo
+                });
+            }
+
+            currentAudio.addEventListener('play', () => {
+                if(waveInterval) clearInterval(waveInterval);
+                waveInterval = setInterval(animateWaves, 150); // Cambia cada 150ms
+                
+                // Reproducir el video vertical al mismo tiempo
+                const syncVideo = document.getElementById('sync-video');
+                if(syncVideo) syncVideo.play();
+            });
+
+            currentAudio.addEventListener('pause', () => {
+                clearInterval(waveInterval);
+                resetWaves();
+                
+                // Pausar el video vertical cuando la música se detiene
+                const syncVideo = document.getElementById('sync-video');
+                if(syncVideo) syncVideo.pause();
+            });
+            
+            // Iniciar en reposo
+            resetWaves();
+        });
+    </script>
+</body>
+</html>
